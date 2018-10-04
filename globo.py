@@ -84,40 +84,34 @@ def DrawGLScene():
     
     glBindTexture(GL_TEXTURE_2D, texture)
     r = 1.0
+    resolution = 15
     c = 0  
     def s(u,v):
-        return ((c + r * math.sin(v)) * math.sin(u), r * math.cos(v), (c + r*math.sin(v)) * math.cos(u))
-#        return ((c + r * math.cos(u)) * math.cos(v), r * math.sin(u), (c + r*math.cos(u)) * math.sin(v))
+        return ((r * math.cos(u)) * math.cos(v), r * math.sin(u), (r*math.cos(u)) * math.sin(v))
     
     tet = -math.pi/2
     phi = 0.0
-    resolution = math.pi/20
+
+#incremento eh pi dividido por uma resolucao. A resolucao determina o numero de "gomos" que serao renderizados na esfera e a discretizacao dos       triangulos(do Triangle Strip) que compoem esses gomos.
+    inc = math.pi/resolution
+
     cor = 0
-    incTextY = 0.0    
-    
     while tet < (math.pi/2):
         glBegin(GL_TRIANGLE_STRIP)
-        glColor3f(math.sin(cor),1.0, 1.0)
-        cor += math.pi/20.0
-        phi = 0
-        incTextX = 0.0
         
-        while phi < (math.pi*2 + resolution):
-            
-
-            glTexCoord2f(incTextX, incTextY);glVertex3fv(s(tet, phi))
-            incTextX += 1.0/40.0
-            
-            glTexCoord2f(incTextX, incTextY);glVertex3fv(s(tet + resolution, phi))
-            phi += resolution
-        #glVertex3fv(s(tet, math.pi*2))
-        #glVertex3fv(s(tet + resolution, math.pi*2))
+        phi = 0
+        #while ate 2pi + o incremento para completar a esfera no final
+        while phi < (math.pi*2 + inc):
+            glColor3f(math.cos(cor),math.sin(cor), 1.0)
+            cor += math.pi/resolution
+            glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+math.pi*0.5)/math.pi))); glVertex3fv(s(tet, phi))
+            glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+inc+math.pi*0.5)/math.pi))); glVertex3fv(s(tet + inc, phi))
+            phi += inc
         glEnd()
-        incTextY += 1.0/20.0
-        tet += resolution
+        tet += inc
     
     #xrot = xrot + 5                # X rotation
-    #yrot = yrot + 5                 # Y rotation
+    yrot = yrot + 1                 # Y rotation
     #zrot = zrot + 5                 # Z rotation
 
     glutSwapBuffers()
