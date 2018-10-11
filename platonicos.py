@@ -23,7 +23,6 @@ vertices = (
     (        0.0, -phi * size,        size), #11
     )
  
-
  
 faces = (
     [  5,  4, 11,],
@@ -47,26 +46,19 @@ faces = (
     [  2,  4,  3,],
     [  3,  4,  8,]
     )
- 
+
+
 cores = ( (1,0,0),(1,1,0),(0,1,0),(0,1,1),(0,0,1),(1,0,1),(0.5,1,1),(1,0,0.5),(0,1,1),(0,0,1),(1,0,1),(0.5,1,1),(1,0,0.5),(1,0,0),(1,1,0),(0,1,0),(0,1,1),(0,0,1),(1,0,1),(1,0,1) )
  
-def tetraedro():
-    glBegin(GL_LINES)
-    i = 0
+def icosaedro():
+    glBegin(GL_TRIANGLE_STRIP)
+
     for face in faces:
-        glColor3fv(cores[i])
         for vertex in face:
             glColor3fv(cores[vertex])
             glVertex3fv(vertices[vertex])
-        i = i+1
+
     glEnd()
- 
-#    glColor3fv((0,0.5,0))
-#    glBegin(GL_LINES)
-#    for linha in linhas:
-#        for vertice in linha:
-#            glVertex3fv(vertices[vertice])
-#    glEnd()
 
     
                 
@@ -74,7 +66,7 @@ def tetraedro():
 def render():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
     glRotatef(2,1,3,0)
-    tetraedro()
+    icosaedro()
     glutSwapBuffers()
     
 def timer(i):
@@ -85,7 +77,7 @@ def timer(i):
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE)
 glutInitWindowSize(800,600)
-glutCreateWindow("ICOSAEDRO?")
+glutCreateWindow("ICOSAEDRO")
 glutDisplayFunc(render)
 glEnable(GL_MULTISAMPLE)
 glEnable(GL_DEPTH_TEST)

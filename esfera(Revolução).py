@@ -24,6 +24,7 @@ def esferaRevolucao(radius, resolution):
         #while ate 2pi + o incremento para completar a esfera no final
         while phi < (math.pi*2 + inc):
             glColor3f(math.cos(cor),math.sin(cor), 1.0)
+            #glColor3f(math.cos(phi),0.6, 1-math.cos(phi))
             cor += math.pi/resolution
             glVertex3fv(s(tet, phi))
             glVertex3fv(s(tet + inc, phi))

@@ -16,25 +16,27 @@ def prismaPoligono(rBase, nBase ,altura):
     
     glBegin(GL_POLYGON)
 
-    for vertex in range(0, resolution):     
-        glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), -1 , math.sin(2 * math.pi * vertex/resolution * radius)])
+    for vertex in range(0, resolution):  
+        glColor3fv(cores[vertex%len(cores)])   
+        glVertex3fv([math.cos(2* math.pi * vertex/resolution) * radius, -1 , math.sin(2 * math.pi * vertex/resolution) * radius])
 
     glEnd()
     
-#    glBegin(GL_TRIANGLE_STRIP)
+    #glBegin(GL_LINES)
+    glBegin(GL_TRIANGLE_STRIP)
         
-#    for vertex in range(0, resolution+1):
-#        glColor3fv(cores[vertex%len(cores)])         
-#        glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), height, math.sin(2 * math.pi * vertex/resolution) * radius])    
-#        glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), -1 , math.sin(2 * math.pi * vertex/resolution) * radius])
+    for vertex in range(0, resolution+1):
+        glColor3fv(cores[vertex%len(cores)])         
+        glVertex3fv([math.cos(2* math.pi * vertex/resolution) * radius, height, math.sin(2 * math.pi * vertex/resolution) * radius])    
+        glVertex3fv([math.cos(2* math.pi * vertex/resolution) * radius, -1 , math.sin(2 * math.pi * vertex/resolution) * radius])
 
-#    glEnd()
+    glEnd()
 
     glBegin(GL_POLYGON)
 
     for vertex in range(0, resolution):     
         glColor3fv(cores[vertex%len(cores)])        
-        glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), height, math.sin(2 * math.pi * vertex/resolution * radius)])
+        glVertex3fv([math.cos(2* math.pi * vertex/resolution) * radius, height, math.sin(2 * math.pi * vertex/resolution) * radius])
 
     glEnd()
 
@@ -43,7 +45,7 @@ def prismaPoligono(rBase, nBase ,altura):
 def render():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
     glRotatef(2,1,3,0)
-    prismaPoligono(1, 4, 1)
+    prismaPoligono(1, 6, 1)
     glutSwapBuffers()
     
 def timer(i):

@@ -27,7 +27,8 @@ def LoadTextures():
 
     ################################################################################
     glBindTexture(GL_TEXTURE_2D, texture)
-    reader = png.Reader(filename='planisferio.png')
+    reader = png.Reader(filename='invplanisferio.png')    
+    #reader = png.Reader(filename='planisferio.png')
     w, h, pixels, metadata = reader.read_flat()
     if(metadata['alpha']):
         modo = GL_RGBA
@@ -84,7 +85,7 @@ def DrawGLScene():
     
     glBindTexture(GL_TEXTURE_2D, texture)
     r = 1.0
-    resolution = 15
+    resolution = 20
     c = 0  
     def s(u,v):
         return ((r * math.cos(u)) * math.cos(v), r * math.sin(u), (r*math.cos(u)) * math.sin(v))
@@ -95,15 +96,13 @@ def DrawGLScene():
 #incremento eh pi dividido por uma resolucao. A resolucao determina o numero de "gomos" que serao renderizados na esfera e a discretizacao dos       triangulos(do Triangle Strip) que compoem esses gomos.
     inc = math.pi/resolution
 
-    cor = 0
     while tet < (math.pi/2):
         glBegin(GL_TRIANGLE_STRIP)
-        
+        glColor3f(math.cos(tet),0.6,1-math.cos(tet))
         phi = 0
         #while ate 2pi + o incremento para completar a esfera no final
         while phi < (math.pi*2 + inc):
-            glColor3f(math.cos(cor),math.sin(cor), 1.0)
-            cor += math.pi/resolution
+            
             glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+math.pi*0.5)/math.pi))); glVertex3fv(s(tet, phi))
             glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+inc+math.pi*0.5)/math.pi))); glVertex3fv(s(tet + inc, phi))
             phi += inc
