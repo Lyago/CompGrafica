@@ -84,30 +84,36 @@ def DrawGLScene():
     glRotatef(zrot,0.0,0.0,1.0) 
     
     glBindTexture(GL_TEXTURE_2D, texture)
-    r = 1.0
+    r = 1.0 
     resolution = 20
-    c = 0  
     def s(u,v):
         return ((r * math.cos(u)) * math.cos(v), r * math.sin(u), (r*math.cos(u)) * math.sin(v))
     
-    tet = -math.pi/2
+    tet = -math.pi/2.0
     phi = 0.0
 
 #incremento eh pi dividido por uma resolucao. A resolucao determina o numero de "gomos" que serao renderizados na esfera e a discretizacao dos       triangulos(do Triangle Strip) que compoem esses gomos.
+    
+    color = 0
     inc = math.pi/resolution
-
-    while tet < (math.pi/2):
+    counterX = 0
+    
+    for i in range(0,resolution):
         glBegin(GL_TRIANGLE_STRIP)
-        glColor3f(math.cos(tet),0.6,1-math.cos(tet))
+        #glColor3f(0.6, 0.6, 0.6)
+        #glColor3f(math.cos(color),math.sin(color), 1.0)
+        glColor3f(1.0*(math.cos(tet)), .8, 1-math.cos(tet))
+        #glColor3f( 1.0 ,0.8*(math.cos(tet)), 1-math.cos(tet))
         phi = 0
-        #while ate 2pi + o incremento para completar a esfera no final
-        while phi < (math.pi*2 + inc):
+        for j in range(0,resolution*2+1):
             
+            color += math.pi/resolution
             glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+math.pi*0.5)/math.pi))); glVertex3fv(s(tet, phi))
             glTexCoord2f(1.0-(phi/((math.pi)*2)),(1.0-((tet+inc+math.pi*0.5)/math.pi))); glVertex3fv(s(tet + inc, phi))
             phi += inc
         glEnd()
-        tet += inc
+        tet += inc    
+
     
     #xrot = xrot + 5                # X rotation
     yrot = yrot + 1                 # Y rotation

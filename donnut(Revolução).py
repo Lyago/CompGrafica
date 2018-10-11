@@ -19,12 +19,14 @@ def donnutRevolucao(radius, c, resolution):
     inc = math.pi/resolution
     cor = 0
 
-    while tet <= (math.pi*2):
+    for i in range(0,resolution*2):    
+    #while tet <= (math.pi*2):
         glBegin(GL_TRIANGLE_STRIP)
         glColor3f(math.sin(cor),1.0, 1.0)
         cor += inc
         phi = 0.0
-        while phi <= (math.pi*2):
+        for i in range(0, resolution*2):        
+        #while phi <= (math.pi*2):
             glVertex3fv(s(tet, phi))
             glVertex3fv(s(tet + inc, phi))
             phi += inc
@@ -37,7 +39,7 @@ def donnutRevolucao(radius, c, resolution):
 def render():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
     glRotatef(2,1,3,0)
-    donnutRevolucao(1,2,15)
+    donnutRevolucao(1,2,20)
     glutSwapBuffers()
     
 def timer(i):
