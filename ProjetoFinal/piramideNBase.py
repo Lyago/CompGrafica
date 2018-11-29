@@ -1,6 +1,7 @@
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
+import time
 import math
 import random
  
@@ -8,6 +9,8 @@ import random
 cores = ( (1,0,0),(1,1,0),(0,1,0),(0,1,1),(0,0,1),(1,0,1),(0.5,1,1),(1,0,0.5) )
 
 def piramidePoligono(rBase, nBase ,altura):
+    
+    glColor3fv(cores[3])     
     glBegin(GL_POLYGON)
 
 #Chamei de resolution pq esse algoritmo tmb pode gerar a aprox. de um cone conforme nBase aumenta    
@@ -19,23 +22,28 @@ def piramidePoligono(rBase, nBase ,altura):
         glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), -1 , math.sin(2 * math.pi * vertex/resolution * radius)])
 
     glEnd()
-    
-    glBegin(GL_TRIANGLE_FAN)
+
 
     glVertex3fv(height)    
 
-    for vertex in range(0, resolution+1):
-        glColor3fv(cores[vertex])     
-        glVertex3fv([math.cos(2* math.pi * vertex/resolution * radius), -1 , math.sin(2 * math.pi * vertex/resolution) * radius])
+    for vertex in range(0, resolution):
+        
+        glColor3fv(cores[vertex%len(cores)])
+        
+        glBegin(GL_TRIANGLES)
+             
+        glVertex3fv([math.cos(2* math.pi * (vertex%(resolution))/resolution * radius), -1 , math.sin(2 * math.pi * (vertex%(resolution))/resolution) * radius])
+        glVertex3fv([math.cos(2* math.pi * ((vertex+1)%(resolution))/resolution * radius), -1 , math.sin(2 * math.pi * ((vertex+1)%(resolution))/resolution) * radius])
+        glVertex3fv(height)
 
-    glEnd()
+        glEnd()
 
                 
 
 def render():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-    glRotatef(2,1,3,0)
-    piramidePoligono(1, 3, 1)
+    glRotatef(2,3,3,0)
+    piramidePoligono(1, 3, .5)
     glutSwapBuffers()
     
 def timer(i):
