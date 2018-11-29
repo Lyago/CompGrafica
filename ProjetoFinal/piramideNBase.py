@@ -8,6 +8,51 @@ import random
  
 cores = ( (1,0,0),(1,1,0),(0,1,0),(0,1,1),(0,0,1),(1,0,1),(0.5,1,1),(1,0,0.5) )
 
+def roda(cx, cy, px, py, a):
+
+  _px = ((px-cx)*math.cos(a)-(py-cy)*math.sin(a))+cx
+  _py = ((px-cx)*math.sin(a)+(py-cy)*math.cos(a))+cy
+  return [_px, _py, 0]
+
+
+
+def foldTetrahedron(edgeLen, height):
+	
+    apothem = edgeLen * math.sqrt(3)/2
+    glColor3fv(cores[1])
+    glBegin(GL_POLYGON)
+    glVertex3fv((-edgeLen/2, -apothem/2, -height/2))
+    glVertex3fv((edgeLen/2, -apothem/2, -height/2))
+    glVertex3fv((edgeLen/4, apothem/2, -height/2))
+    glEnd()
+
+    glColor3fv(cores[0])
+    glBegin(GL_POLYGON)
+    rotated = roda(edgeLen/4, apothem/2, edgeLen/2, -apothem/2, math.pi/3)
+    rotated[2] = -height/2
+    glVertex3fv(rotated)
+    glVertex3fv((edgeLen/2, -apothem/2, -height/2))
+    glVertex3fv((edgeLen/4, apothem/2, -height/2))
+    glEnd()
+    
+    glColor3fv(cores[2])
+    glBegin(GL_POLYGON)
+    rotated = roda(edgeLen/4, apothem/2, -edgeLen/2, -apothem/2, -math.pi/3)
+    rotated[2] = -height/2
+    glVertex3fv(rotated)
+    glVertex3fv((-edgeLen/2, -apothem/2, -height/2))
+    glVertex3fv((edgeLen/4, apothem/2, -height/2))
+    glEnd()
+	
+    glColor3fv(cores[3])
+    glBegin(GL_POLYGON)
+    rotated = roda(-edgeLen/2, -apothem/2, edgeLen/2, -apothem/2, -math.pi/3)
+    rotated[2] = -height/2
+    glVertex3fv(rotated)
+    glVertex3fv((-edgeLen/2, -apothem/2, -height/2))
+    glVertex3fv((edgeLen/2, -apothem/2, -height/2))
+    glEnd()
+
 def piramidePoligono(rBase, nBase ,altura):
     
     glColor3fv(cores[3])     
@@ -43,7 +88,8 @@ def piramidePoligono(rBase, nBase ,altura):
 def render():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
     glRotatef(2,3,3,0)
-    piramidePoligono(1, 3, .5)
+    #piramidePoligono(1, 3, .5)
+    foldTetrahedron(3, 0)
     glutSwapBuffers()
     
 def timer(i):
@@ -59,8 +105,8 @@ glutDisplayFunc(render)
 glEnable(GL_MULTISAMPLE)
 glEnable(GL_DEPTH_TEST)
 glClearColor(0.,0.,0.,1.)
-gluPerspective(40,800.0/600.0,0.1,50.0)
+gluPerspective(60,800.0/600.0,0.1,50.0)
 glTranslatef(0.0,0.0,-8)
-glRotatef(45,1,1,1)
+#glRotatef(45,1,1,1)
 glutTimerFunc(50,timer,1)
 glutMainLoop()
