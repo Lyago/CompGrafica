@@ -1,4 +1,4 @@
 Hit 'r' key to stop the rotation
-Use de 'x', 'y' and 'z' to control the axis with Right and Left Keys.
+Use the 'x', 'y' and 'z' to control the axis with Right and Left Keys.
 1, 2, 3, 4 and 5 toogles controls between tetrahedra, 0 to control all.
 Press ESC key to quit.
