@@ -9,23 +9,24 @@ import random
 # so instead of saying: ESCAPE = 27, we use the following.
 ESCAPE = '\033'
 STATE = 'ROTATING'
+CONTROL = 0 #all tetrahedra
 # Number of the glut window.
 window = 0
 
 # Rotations. 
-xrot = 5.0
-yrot = 5.0
-zrot = 5.0
+xrot = [5.0] * 6
+yrot = [5.0] * 6
+zrot = [5.0] * 6
+
 dx = 5.0
 dy = 5.0
 dz = 5.0 
 
 #Folding animation duration in frames
-duration = 5000
+duration = 500
 frameCount = 1
- 
-cores = ( (.99,0,0),(.99,.99,0),(0,.99,0),(0,.99,.99),(0,0,.99),(1,0,1),(0.5,1,1),(1,0,0.5) )
 
+#Rotation function to build the unfolded tetrahedra 
 def roda(cx, cy, px, py, a):
 
   _px = ((px-cx)*math.cos(a)-(py-cy)*math.sin(a))+cx
@@ -33,11 +34,10 @@ def roda(cx, cy, px, py, a):
   return [_px, _py, 0.0]
 
 
-def foldTetrahedron(edgeLen, frameCount):
+def foldTetrahedron(edgeLen, frameCount, colors):
 	
     
     apothem = edgeLen * math.sqrt(3.0)/2.0
-    
     finalHeight = 2.0/3.0 * edgeLen * math.sqrt(6.0)/3.0
     startHeight = -1.0/3.0 * edgeLen * math.sqrt(6.0)/3.0 
     height = finalHeight * frameCount/duration 
@@ -57,15 +57,17 @@ def foldTetrahedron(edgeLen, frameCount):
     centerOffsetX = edgeLen
     centerOffsetY = 2.0*apothem/3.0
 
-    
-    glColor3fv(cores[1])
+
+    #Base, center triangle
+    glColor3fv(colors[0])
     glBegin(GL_POLYGON)
     glVertex3fv((vertex1X, vertex1Y, startHeight))
     glVertex3fv((vertex2X, vertex2Y, startHeight))
     glVertex3fv((vertex3X, vertex3Y, startHeight))
     glEnd()
-      
-    glColor3fv(cores[0])
+    
+    #First rotation, right triangle  
+    glColor3fv(colors[1])
     glBegin(GL_POLYGON)
     rotated = roda(vertex3X, vertex3Y, vertex2X, vertex2Y, math.pi/3)
     startX = rotated[0]
@@ -78,7 +80,9 @@ def foldTetrahedron(edgeLen, frameCount):
     glVertex3fv((vertex3X, vertex3Y, startHeight))
     glEnd()
     
-    glColor3fv(cores[2])
+
+    #Second rotation, left triangle
+    glColor3fv(colors[2])
     glBegin(GL_POLYGON)
     rotated = roda(vertex3X, vertex3Y, vertex1X, vertex1Y, -math.pi/3)
     startX = rotated[0]
@@ -91,7 +95,8 @@ def foldTetrahedron(edgeLen, frameCount):
     glVertex3fv((vertex3X, vertex3Y, startHeight))
     glEnd()
 	
-    glColor3fv(cores[3])
+    #Third rotation, lower triangle
+    glColor3fv(colors[3])
     glBegin(GL_POLYGON)
     rotated = roda(vertex1X, vertex1Y, vertex2X, vertex2Y, -math.pi/3)
     startX = rotated[0]
@@ -114,7 +119,6 @@ def InitGL(Width, Height):
     
     glMatrixMode(GL_PROJECTION)
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-    glRotatef(-180.0,1.0,.0,0.0)
 
     glMatrixMode(GL_MODELVIEW)
    
@@ -133,30 +137,104 @@ def DrawGLScene():
     global xrot, yrot, zrot, frameCount
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)    
-    glLoadIdentity()                   
+    glLoadIdentity()
 
+    ###############################
+    #Up-left corner tetrahedron   #
+    ###############################
+    glPushMatrix()
     glClearColor(0.5,0.5,0.5,1.0)            
     
-    glTranslatef(0.0,0.0,-5.0)            
+    glTranslatef(-3.0,2.0,-10.0)            
 
-    glRotatef(xrot,1.0,0.0,0.0)          
-    glRotatef(yrot,0.0,1.0,0.0)           
-    glRotatef(zrot,0.0,0.0,1.0) 
+    glRotatef(xrot[1],1.0,0.0,0.0)          
+    glRotatef(yrot[1],0.0,1.0,0.0)           
+    glRotatef(zrot[1],0.0,0.0,1.0) 
     
-    foldTetrahedron(2.0, frameCount)
+    foldTetrahedron(2.0, frameCount, ((.99,0,0),(0,0,.99),(0,.99,0),(.99,.99,0)))
+    glPopMatrix()
+
+    ###############################
+    #Up-right corner tetrahedron  #
+    ###############################
+    glPushMatrix()
+    glClearColor(0.5,0.5,0.5,1.0)            
+    
+    glTranslatef(3.0,2.0,-10.0)            
+
+    glRotatef(xrot[2],1.0,0.0,0.0)          
+    glRotatef(yrot[2],0.0,1.0,0.0)           
+    glRotatef(zrot[2],0.0,0.0,1.0)
+    foldTetrahedron(2.0, frameCount, ((0,.99,0),(.99,.99,0),(.99,0,0),(0,0,.99)))
+    glPopMatrix()  
+    
+    ###############################
+    #Down-left corner tetrahedron #
+    ###############################
+    glPushMatrix()
+    glClearColor(0.5,0.5,0.5,1.0)            
+    
+    glTranslatef(-3.0,-2.0,-10.0)            
+
+    glRotatef(xrot[3],1.0,0.0,0.0)          
+    glRotatef(yrot[3],0.0,1.0,0.0)           
+    glRotatef(zrot[3],0.0,0.0,1.0) 
+    
+    foldTetrahedron(2.0, frameCount, ((.99,.99,0),(0,0,.99),(.99,0,0),(0,.99,0)))
+    glPopMatrix()
+
+    ###############################
+    #Down-right corner tetrahedron#
+    ###############################
+    glPushMatrix()
+    glClearColor(0.5,0.5,0.5,1.0)            
+    
+    glTranslatef(3.0,-2.0,-10.0)            
+
+    glRotatef(xrot[4],1.0,0.0,0.0)          
+    glRotatef(yrot[4],0.0,1.0,0.0)           
+    glRotatef(zrot[4],0.0,0.0,1.0)
+    foldTetrahedron(2.0, frameCount, ((.99,0,0),(.99,.99,0),(0,0,.99),(0,.99,0)))
+    glPopMatrix()      
+
+    ####################
+    #Center tetrahedron#
+    ####################
+    glPushMatrix()
+    glClearColor(0.5,0.5,0.5,1.0)            
+    
+    glTranslatef(0.0,0.0,-10.0)            
+
+    glRotatef(xrot[5],1.0,0.0,0.0)          
+    glRotatef(yrot[5],0.0,1.0,0.0)           
+    glRotatef(zrot[5],0.0,0.0,1.0)
+    foldTetrahedron(2.0, frameCount, ((0,0,.99),(0,.99,0),(.99,.99,0),(.99,0,0)))
+    glPopMatrix()  
+
+
     if frameCount < duration:
         frameCount += 1
 
     if STATE == 'ROTATING':
-        #xrot = xrot - .1              # X rotation
-        #yrot = yrot + .1                 # Y rotation
-        zrot = zrot + .1                 # Z rotation
+        #xrot[0] = xrot[0] - .1              # X rotation
+        #yrot[0] = yrot[0] + .1                 # Y rotation
+        zrot[0] = zrot[0] + .1                 # Z rotation
+        for i in range(6):
+            zrot[i] = zrot[0]
+
+    if CONTROL == 0:   
+        for i in range(6):
+            yrot[i] = yrot[0]
+            xrot[i] = xrot[0]
+            zrot[i] = zrot[0]
+            
+            
 
     glutSwapBuffers()
 
 
 def keyPressed(tecla, x, y):
-    global dx, dy, dz, STATE
+    global dx, dy, dz, STATE, CONTROL
     if tecla == ESCAPE:
         glutLeaveMainLoop()
     elif tecla == 'x' or tecla == 'X':
@@ -171,6 +249,19 @@ def keyPressed(tecla, x, y):
         dx = 0
         dy = 0
         dz = 5.0
+    elif tecla == '1':
+        CONTROL = 1
+    elif tecla == '2':
+        CONTROL = 2
+    elif tecla == '3':
+        CONTROL = 3
+    elif tecla == '4':
+        CONTROL = 4
+    elif tecla == '5':
+        CONTROL = 5
+    elif tecla == '0':
+        CONTROL = 0
+        
     elif tecla == 'r' or tecla == 'R':
         if STATE == 'ROTATING':
             STATE = 'STILL'
@@ -179,21 +270,20 @@ def keyPressed(tecla, x, y):
                     
 
 def teclaEspecialPressionada(tecla, x, y):
-    global xrot, yrot, zrot, dx, dy, dz
+    global xrot, yrot, zrot, dx, dy, dz, CONTROL
     if tecla == GLUT_KEY_LEFT:
-        print "ESQUERDA"
-        xrot -= dx                # X rotation
-        yrot -= dy                 # Y rotation
-        zrot -= dz                     
+        for i in range(6):
+            if CONTROL == i:
+                xrot[i] -= dx
+                yrot[i] -= dy
+                zrot[i] -= dz                     
     elif tecla == GLUT_KEY_RIGHT:
-        print "DIREITA"
-        xrot += dx                # X rotation
-        yrot += dy                 # Y rotation
-        zrot += dz                     
-    elif tecla == GLUT_KEY_UP:
-        print "CIMA"
-    elif tecla == GLUT_KEY_DOWN:
-        print "BAIXO"
+        for i in range(6):
+            if CONTROL == i:
+                xrot[i] += dx
+                yrot[i] += dy
+                zrot[i] += dz              
+
 
 def main():
     global window
@@ -207,7 +297,7 @@ def main():
     # the window starts at the upper left corner of the screen 
     glutInitWindowPosition(0, 0)
     
-    window = glutCreateWindow("Tetraedro")
+    window = glutCreateWindow("The Tetrahedron Coloring Problem - Wich one is colored diferently?")
 
     glutDisplayFunc(DrawGLScene)
     
@@ -230,5 +320,5 @@ def main():
 
 # Print message to console, and kick off the main to get it rolling.
 if __name__ == "__main__":
-    print "Hit 'r' key to stop the rotation and use use de 'x', 'y' and 'z' to control the axis with Right and Left Keys. Press ESC key to quit."
+    print "Hit 'r' key to stop the rotation and use de 'x', 'y' and 'z' to control the axis with Right and Left Keys. 1, 2, 3, 4 and 5 toogles controls between tetrahedra. Press ESC key to quit."
     main()
